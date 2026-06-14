@@ -1,0 +1,7 @@
+node_modules/
+dist/
+# Library art is synced from the pinned @gitcade/library at build time, never committed here.
+public/assets/
+*.log
+.env
+.DS_Store

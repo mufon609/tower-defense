@@ -1,0 +1,44 @@
+{
+  "startGold": 220,
+  "goldPerSec": 0,
+  "towerCost": 50,
+  "creepBounty": 8,
+
+  "towerBaseRange": 135,
+  "towerBaseCooldown": 0.7,
+  "towerMinCooldown": 0.2,
+  "towerBulletSpeed": 430,
+  "towerDamage": 22,
+  "bulletHp": 1,
+  "bulletLifespan": 1.0,
+
+  "creepHp": 60,
+  "creepSpeed": 70,
+  "arriveRadius": 8,
+
+  "spawnInterval": 0.8,
+  "waveSize": 5,
+  "waveSizeGrowth": 2,
+  "waveDelay": 4,
+  "maxWaves": 10,
+  "maxAlive": 40,
+  "startDelay": 2,
+
+  "totalCreeps": 140,
+  "maxLeak": 15,
+
+  "upgradeRangeCost": 75,
+  "upgradeRangeAmount": 28,
+  "upgradeRangeMax": 5,
+  "upgradeRangeGrowth": 1.5,
+
+  "upgradeFirerateCost": 90,
+  "upgradeFirerateAmount": -0.08,
+  "upgradeFirerateMax": 5,
+  "upgradeFirerateGrowth": 1.5,
+
+  "upgradeBountyCost": 100,
+  "upgradeBountyAmount": 4,
+  "upgradeBountyMax": 5,
+  "upgradeBountyGrowth": 1.6
+}

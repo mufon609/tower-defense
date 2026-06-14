@@ -1,0 +1,487 @@
+{
+  "id": "main",
+  "size": {
+    "width": 800,
+    "height": 600
+  },
+  "background": "#0b0b16",
+  "entities": [
+    {
+      "id": "path-0",
+      "sprite": {
+        "kind": "shape",
+        "shape": "rect",
+        "color": "#2a2f50"
+      },
+      "size": {
+        "w": 270,
+        "h": 30
+      },
+      "position": {
+        "x": -30,
+        "y": 105
+      },
+      "tags": [
+        "path"
+      ],
+      "layer": 1,
+      "behaviors": []
+    },
+    {
+      "id": "path-1",
+      "sprite": {
+        "kind": "shape",
+        "shape": "rect",
+        "color": "#2a2f50"
+      },
+      "size": {
+        "w": 30,
+        "h": 230
+      },
+      "position": {
+        "x": 205,
+        "y": 105
+      },
+      "tags": [
+        "path"
+      ],
+      "layer": 1,
+      "behaviors": []
+    },
+    {
+      "id": "path-2",
+      "sprite": {
+        "kind": "shape",
+        "shape": "rect",
+        "color": "#2a2f50"
+      },
+      "size": {
+        "w": 370,
+        "h": 30
+      },
+      "position": {
+        "x": 205,
+        "y": 305
+      },
+      "tags": [
+        "path"
+      ],
+      "layer": 1,
+      "behaviors": []
+    },
+    {
+      "id": "path-3",
+      "sprite": {
+        "kind": "shape",
+        "shape": "rect",
+        "color": "#2a2f50"
+      },
+      "size": {
+        "w": 30,
+        "h": 210
+      },
+      "position": {
+        "x": 545,
+        "y": 305
+      },
+      "tags": [
+        "path"
+      ],
+      "layer": 1,
+      "behaviors": []
+    },
+    {
+      "id": "path-4",
+      "sprite": {
+        "kind": "shape",
+        "shape": "rect",
+        "color": "#2a2f50"
+      },
+      "size": {
+        "w": 300,
+        "h": 30
+      },
+      "position": {
+        "x": 545,
+        "y": 485
+      },
+      "tags": [
+        "path"
+      ],
+      "layer": 1,
+      "behaviors": []
+    },
+    {
+      "id": "exit",
+      "sprite": {
+        "kind": "none"
+      },
+      "size": {
+        "w": 60,
+        "h": 150
+      },
+      "position": {
+        "x": 790,
+        "y": 425
+      },
+      "tags": [
+        "exit"
+      ],
+      "layer": 0,
+      "behaviors": [
+        {
+          "type": "trigger-zone",
+          "part": "trigger-zone@1.0.0",
+          "params": {
+            "tag": "creep",
+            "kill": true,
+            "enterEvent": "creep-leaked",
+            "sound": "lose"
+          }
+        }
+      ]
+    },
+    {
+      "id": "hud-gold",
+      "sprite": {
+        "kind": "text",
+        "bind": "gold",
+        "text": "0",
+        "font": "20px monospace",
+        "color": "#ffcd75",
+        "align": "left"
+      },
+      "size": {
+        "w": 160,
+        "h": 24
+      },
+      "position": {
+        "x": 12,
+        "y": 10
+      },
+      "tags": [
+        "hud"
+      ],
+      "layer": 100,
+      "behaviors": []
+    },
+    {
+      "id": "hud-wave",
+      "sprite": {
+        "kind": "text",
+        "bind": "wave",
+        "text": "0",
+        "font": "20px monospace",
+        "color": "#41a6f6",
+        "align": "center"
+      },
+      "size": {
+        "w": 160,
+        "h": 24
+      },
+      "position": {
+        "x": 400,
+        "y": 10
+      },
+      "tags": [
+        "hud"
+      ],
+      "layer": 100,
+      "behaviors": []
+    },
+    {
+      "id": "hud-leak",
+      "sprite": {
+        "kind": "text",
+        "bind": "leaked",
+        "text": "0",
+        "font": "20px monospace",
+        "color": "#ff6b6b",
+        "align": "right"
+      },
+      "size": {
+        "w": 160,
+        "h": 24
+      },
+      "position": {
+        "x": 628,
+        "y": 10
+      },
+      "tags": [
+        "hud"
+      ],
+      "layer": 100,
+      "behaviors": []
+    }
+  ],
+  "systems": [
+    {
+      "type": "aabb-collision",
+      "params": {
+        "pairs": [
+          [
+            "creep",
+            "tower-bullet"
+          ],
+          [
+            "creep",
+            "exit"
+          ]
+        ]
+      }
+    },
+    {
+      "type": "currency",
+      "part": "currency@1.0.0",
+      "params": {
+        "currencyKey": "gold",
+        "startAmount": "$cfg.startGold",
+        "passiveIncome": "$cfg.goldPerSec"
+      }
+    },
+    {
+      "type": "tower-build",
+      "params": {
+        "requestKey": "placeRequest",
+        "currencyKey": "gold",
+        "towerCost": "$cfg.towerCost",
+        "tileSize": 40,
+        "rangeKey": "towerRange",
+        "cooldownKey": "towerCooldown",
+        "bountyBonusKey": "bountyBonus",
+        "baseRange": "$cfg.towerBaseRange",
+        "baseCooldown": "$cfg.towerBaseCooldown",
+        "minCooldown": "$cfg.towerMinCooldown",
+        "towerTag": "tower",
+        "prototype": {
+          "id": "tower",
+          "sprite": {
+            "kind": "image",
+            "src": "assets/sprites/enemy-shooter.png"
+          },
+          "size": {
+            "w": 32,
+            "h": 32
+          },
+          "tags": [
+            "tower"
+          ],
+          "layer": 4,
+          "behaviors": [
+            {
+              "type": "ai-aim-and-fire",
+              "part": "ai-aim-and-fire@1.0.0",
+              "params": {
+                "targetTag": "creep",
+                "range": "$cfg.towerBaseRange",
+                "cooldown": "$cfg.towerBaseCooldown",
+                "projectileSpeed": "$cfg.towerBulletSpeed",
+                "sound": "shoot",
+                "projectile": {
+                  "id": "tower-bullet",
+                  "sprite": {
+                    "kind": "image",
+                    "src": "assets/sprites/bullet.png"
+                  },
+                  "size": {
+                    "w": 10,
+                    "h": 10
+                  },
+                  "tags": [
+                    "tower-bullet"
+                  ],
+                  "layer": 3,
+                  "behaviors": [
+                    {
+                      "type": "velocity",
+                      "params": {}
+                    },
+                    {
+                      "type": "contact-damage",
+                      "params": {
+                        "targetTag": "creep",
+                        "damage": "$cfg.towerDamage",
+                        "selfDestruct": true
+                      }
+                    },
+                    {
+                      "type": "health-and-death",
+                      "params": {
+                        "hp": "$cfg.bulletHp",
+                        "lifespan": "$cfg.bulletLifespan",
+                        "deathSound": ""
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "creep-accounting",
+      "params": {
+        "currencyKey": "gold",
+        "bounty": "$cfg.creepBounty",
+        "bountyBonusKey": "bountyBonus",
+        "resolvedKey": "resolved",
+        "leakedKey": "leaked",
+        "killEvent": "creep-killed",
+        "leakEvent": "creep-leaked"
+      }
+    },
+    {
+      "type": "upgrade-tree",
+      "part": "upgrade-tree@1.0.0",
+      "params": {
+        "currencyKey": "gold",
+        "levelsKey": "upgrades",
+        "requestKey": "upgradeRequest",
+        "upgrades": [
+          {
+            "id": "range",
+            "cost": "$cfg.upgradeRangeCost",
+            "effectKey": "towerRange",
+            "effectAmount": "$cfg.upgradeRangeAmount",
+            "maxLevel": "$cfg.upgradeRangeMax",
+            "costGrowth": "$cfg.upgradeRangeGrowth"
+          },
+          {
+            "id": "firerate",
+            "cost": "$cfg.upgradeFirerateCost",
+            "effectKey": "towerCooldown",
+            "effectAmount": "$cfg.upgradeFirerateAmount",
+            "maxLevel": "$cfg.upgradeFirerateMax",
+            "costGrowth": "$cfg.upgradeFirerateGrowth"
+          },
+          {
+            "id": "bounty",
+            "cost": "$cfg.upgradeBountyCost",
+            "effectKey": "bountyBonus",
+            "effectAmount": "$cfg.upgradeBountyAmount",
+            "maxLevel": "$cfg.upgradeBountyMax",
+            "costGrowth": "$cfg.upgradeBountyGrowth"
+          }
+        ]
+      }
+    },
+    {
+      "type": "wave-spawner",
+      "part": "wave-spawner@1.0.0",
+      "params": {
+        "interval": "$cfg.spawnInterval",
+        "waveSize": "$cfg.waveSize",
+        "waveSizeGrowth": "$cfg.waveSizeGrowth",
+        "waveDelay": "$cfg.waveDelay",
+        "maxWaves": "$cfg.maxWaves",
+        "maxAlive": "$cfg.maxAlive",
+        "startDelay": "$cfg.startDelay",
+        "countTag": "creep",
+        "waveKey": "wave",
+        "advanceOnClear": true,
+        "spawnPoints": [
+          {
+            "x": -30,
+            "y": 108
+          }
+        ],
+        "prototype": {
+          "id": "creep",
+          "sprite": {
+            "kind": "image",
+            "src": "assets/sprites/enemy-swarm.png"
+          },
+          "size": {
+            "w": 24,
+            "h": 24
+          },
+          "tags": [
+            "creep"
+          ],
+          "layer": 3,
+          "behaviors": [
+            {
+              "type": "follow-path",
+              "part": "follow-path@1.0.0",
+              "params": {
+                "points": [
+                  {
+                    "x": -30,
+                    "y": 120
+                  },
+                  {
+                    "x": 220,
+                    "y": 120
+                  },
+                  {
+                    "x": 220,
+                    "y": 320
+                  },
+                  {
+                    "x": 560,
+                    "y": 320
+                  },
+                  {
+                    "x": 560,
+                    "y": 500
+                  },
+                  {
+                    "x": 840,
+                    "y": 500
+                  }
+                ],
+                "speed": "$cfg.creepSpeed",
+                "arriveRadius": "$cfg.arriveRadius",
+                "loop": false
+              }
+            },
+            {
+              "type": "velocity",
+              "params": {}
+            },
+            {
+              "type": "health-and-death",
+              "part": "health-and-death@1.0.0",
+              "params": {
+                "hp": "$cfg.creepHp",
+                "deathEvent": "creep-killed",
+                "deathSound": "explode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "win-lose-conditions",
+      "part": "win-lose-conditions@1.0.0",
+      "params": {
+        "conditions": [
+          {
+            "key": "leaked",
+            "cmp": "gte",
+            "value": "$cfg.maxLeak",
+            "outcome": "lose",
+            "winner": "creeps"
+          },
+          {
+            "key": "resolved",
+            "cmp": "gte",
+            "value": "$cfg.totalCreeps",
+            "outcome": "win",
+            "winner": "player"
+          }
+        ]
+      }
+    },
+    {
+      "type": "explosion",
+      "part": "explosion@1.0.0",
+      "params": {
+        "event": "creep-killed"
+      }
+    }
+  ]
+}

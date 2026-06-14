@@ -1,0 +1,13 @@
+{
+  "name": "Tower Defense",
+  "slug": "tower-defense",
+  "description": "Place turrets along the path, upgrade them with the gold from each kill, and hold the line for 10 escalating waves. The governance flagship — 100% of its balance lives in config.json.",
+  "version": "1.0.0",
+  "engine": "gitcade-sdk",
+  "sdkVersion": "0.1.0",
+  "libraryVersion": "0.1.0",
+  "entryPoint": "src/scenes/main.json",
+  "license": { "code": "MIT", "assets": "CC-BY-4.0" },
+  "authors": [{ "name": "GitCade", "github": "gitcade-games" }],
+  "tier": "ecosystem"
+}

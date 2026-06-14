@@ -329,7 +329,11 @@
         "resolvedKey": "resolved",
         "leakedKey": "leaked",
         "killEvent": "creep-killed",
-        "leakEvent": "creep-leaked"
+        "leakEvent": "creep-leaked",
+        "creepTag": "creep",
+        "waveKey": "wave",
+        "clearedKey": "clearedWaves",
+        "wavesCompleteEvent": "waves-complete"
       }
     },
     {
@@ -467,9 +471,9 @@
             "winner": "creeps"
           },
           {
-            "key": "resolved",
+            "key": "clearedWaves",
             "cmp": "gte",
-            "value": "$cfg.totalCreeps",
+            "value": "$cfg.maxWaves",
             "outcome": "win",
             "winner": "player"
           }

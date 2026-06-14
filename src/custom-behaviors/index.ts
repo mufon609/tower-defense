@@ -126,13 +126,34 @@ export const towerBuild: SystemFn = (world, params) => {
 };
 
 /**
- * `creep-accounting` — the objective economy. Attaches once per World and, on each
- * creep death/leak, awards the bounty (+ the `bountyBonus` upgrade) and ratchets
- * the `resolved`/`leaked` counters that `win-lose-conditions` reads. No per-tick
- * work after attaching.
+ * `creep-accounting` — the objective economy AND the self-consistent win signal.
+ * Attaches once per World and, on each creep death/leak, awards the bounty
+ * (+ the `bountyBonus` upgrade) and ratchets the `resolved`/`leaked` counters that
+ * `win-lose-conditions` reads.
+ *
+ * TD2 — WIN is derived, never hand-computed. The old design won on
+ * `resolved >= totalCreeps`, where `totalCreeps` was a standalone constant in
+ * config.json that duplicated Σ waveSizeFor(1..maxWaves). That constant was
+ * DECOUPLED from the spawner: any community rebalance of `waveSize` /
+ * `waveSizeGrowth` / `maxWaves` that forgot to recompute it would either win early
+ * or — if the true spawn count dropped below the constant — cap `resolved` under
+ * the threshold so NEITHER win nor lose ever fired (a softlock bricking the
+ * governance flagship). The fix removes the duplicate and drives the win off the
+ * spawner's OWN signal:
+ *   - the `wave-spawner` emits `waves-complete` exactly once, after the FINAL wave
+ *     is fully spawned and the field is cleared — it cannot desync from
+ *     waveSize/waveSizeGrowth/maxWaves because the same spawner computes both;
+ *   - we additionally require the LIVE creep count to be 0 (the structural truth
+ *     "no creeps remain alive") and that the player has not already lost.
+ * When all three hold we publish the number of waves actually cleared into
+ * `clearedKey`; `win-lose-conditions` then wins on `clearedWaves >= $cfg.maxWaves`.
+ * Both sides reference the SAME spawner config, so no config edit can decouple the
+ * win from the wave math. This preserves the original semantics exactly (survive
+ * every wave, with leaks under `maxLeak`, to win) without any duplicated total.
  *
  * Params: `currencyKey`, `bounty` ($cfg), `bountyBonusKey`, `resolvedKey`,
- * `leakedKey`, `killEvent`, `leakEvent`, `stateKey`.
+ * `leakedKey`, `killEvent`, `leakEvent`, `creepTag`, `waveKey`, `clearedKey`,
+ * `wavesCompleteEvent`, `stateKey`.
  */
 export const creepAccounting: SystemFn = (world, params) => {
   const currencyKey = str(params, "currencyKey", "gold");
@@ -142,6 +163,14 @@ export const creepAccounting: SystemFn = (world, params) => {
   const leakedKey = str(params, "leakedKey", "leaked");
   const killEvent = str(params, "killEvent", "creep-killed");
   const leakEvent = str(params, "leakEvent", "creep-leaked");
+  // Win-derivation wiring (TD2). All strings — no balance literals here.
+  const creepTag = str(params, "creepTag", "creep");
+  const waveKey = str(params, "waveKey", "wave");
+  const clearedKey = str(params, "clearedKey", "clearedWaves");
+  const wavesCompleteEvent = str(params, "wavesCompleteEvent", "waves-complete");
+  // Private scratch flag on world.state, so a `loadScene` ("Play again") clears it
+  // and the restarted spawner re-emits `waves-complete` for the new run.
+  const completeFlagKey = "__wavesComplete";
 
   attachOnce(world, "creep-accounting", () => {
     const bump = (key: string, by: number): void => {
@@ -155,7 +184,23 @@ export const creepAccounting: SystemFn = (world, params) => {
       bump(leakedKey, 1);
       bump(resolvedKey, 1);
     });
+    // The spawner's authoritative "every wave has now been spawned" signal.
+    world.events.on(wavesCompleteEvent, () => {
+      world.state[completeFlagKey] = true;
+    });
   });
+
+  // Self-consistent win: all waves spawned AND the field is empty AND not already
+  // lost. `win-lose-conditions` (which runs after this system) reads `clearedKey`.
+  // Guarded by `gameOver` so a leak that reached `maxLeak` (checked there, ordered
+  // before the win condition) takes precedence and this never overrides a loss.
+  if (
+    !world.state.gameOver &&
+    world.state[completeFlagKey] === true &&
+    world.query(creepTag).length === 0
+  ) {
+    world.state[clearedKey] = (world.state[waveKey] as number) ?? 0;
+  }
 };
 
 export function registerCustomBehaviors(registry: Registry): void {

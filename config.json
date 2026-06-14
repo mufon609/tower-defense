@@ -24,7 +24,6 @@
   "maxAlive": 40,
   "startDelay": 2,
 
-  "totalCreeps": 140,
   "maxLeak": 15,
 
   "upgradeRangeCost": 75,
